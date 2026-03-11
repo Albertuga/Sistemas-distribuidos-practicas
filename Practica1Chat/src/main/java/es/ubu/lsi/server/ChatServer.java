@@ -7,7 +7,7 @@ import es.ubu.lsi.common.ChatMessage;
 /**
  * Chat server.
  * 
- * @author ...
+ * @author ALBERTO RAFAEL MUÑOZ MORENO
  *
  */
 public interface ChatServer {

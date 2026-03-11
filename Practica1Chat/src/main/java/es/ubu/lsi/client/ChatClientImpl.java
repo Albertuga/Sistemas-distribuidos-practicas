@@ -64,7 +64,7 @@ public class ChatClientImpl implements ChatClient {
 			socket = new Socket(server, port);
 			String msg = "Connection accepted " + socket.getInetAddress() + ":"
 					+ socket.getPort();
-			display(msg);
+			display(msg); //Publica el mensaje en pantalla
 			sInput = new ObjectInputStream(socket.getInputStream());
 			sOutput = new ObjectOutputStream(socket.getOutputStream());
 			
