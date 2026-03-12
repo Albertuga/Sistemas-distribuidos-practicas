@@ -4,6 +4,9 @@ import java.net.*;
 import java.io.*;
 import java.util.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import es.ubu.lsi.common.ChatMessage;
 import es.ubu.lsi.common.ChatMessage.MessageType;
 
@@ -36,6 +39,11 @@ public class ChatClientImpl implements ChatClient {
 
 	/** Id. */
 	private int id;
+	
+	/**MODIFICACION!: HashMap que contendrá los nombres y puertos de usuarios baneados del chat**/
+	private Map<String, Integer> puertoUsuario = new HashMap<>();
+	/**HashSet que contiene unicamente la lista de puertos baneados**/
+	private Set<Integer> puertoBaneado = new HashSet<>();
 
 	/**
 	 * Constructor.
@@ -213,6 +221,29 @@ public class ChatClientImpl implements ChatClient {
 				System.out.print("> ");
 				// read message from user
 				String userMsg = scan.nextLine();
+				/*IMPLEMENTO FUNCIONALIDAD DE BAN - UNBAN a partir del mensaje*/
+				if (userMsg.startsWith("ban ")) { //BAN
+					String usuario = userMsg.substring(4);
+					Integer puerto= clientChat.puertoUsuario.get(usuario);
+					
+					if(puerto != null) {
+						clientChat.puertoBaneado.add(puerto);
+						System.out.println("Usuario " + usuario + " baneado de este chat.");
+					} else { // encaso de que no tegnamos numero de puerto
+						System.out.println("Usuario no reconocido");
+					}
+					continue;
+				}
+				if (userMsg.startsWith("unban ")) { //UNBAN
+					String usuario = userMsg.substring(6);
+					Integer puerto = clientChat.puertoUsuario.get(usuario);
+					
+					if(puerto != null) {
+						clientChat.puertoBaneado.remove(puerto);
+						System.out.println("Usuario "+usuario+" desbloqueado.");
+					}
+					continue;
+				}
 				// logout if message is LOGOUT
 				if (userMsg.equalsIgnoreCase(MessageType.LOGOUT.toString())) {
 					client.sendMessage(new ChatMessage(clientChat.id, MessageType.LOGOUT,
@@ -248,8 +279,30 @@ public class ChatClientImpl implements ChatClient {
 		public void run() {
 			while (true) {
 				try {
-					ChatMessage msg = (ChatMessage) sInput.readObject();
+					ChatMessage msg = (ChatMessage) sInput.readObject(); //recibo mensaje y guardo emisor
+					String mensaje = msg.getMessage();		//Extraigo texto msg
 					if (msg.getId() != id) {
+						int puertoId = msg.getId();
+						
+						if(mensaje.contains(":")) {
+							String[] divide = mensaje.split(" ");
+							
+							if (divide.length >= 2) {
+								String emisor = divide[1].replace(":", "");
+								puertoUsuario.put(emisor,  puertoId);
+							}
+						} else if (mensaje.contains("now connected")) {
+							//En caso de que nunca haya escrito
+							String[] divide = mensaje.split(" ");
+							
+							if(divide.length >= 2) {
+								String emisor = divide[1];
+								puertoUsuario.put(emisor,  puertoId);
+							}
+						}				
+					}
+					
+					if (msg.getId() != id && !puertoBaneado.contains(msg.getId())) { //IMPORTANTE si esta ban no se imprime
 						// if console mode print the message and add back the prompt
 						System.out.println(msg.getMessage());
 						System.out.print("\n> ");
