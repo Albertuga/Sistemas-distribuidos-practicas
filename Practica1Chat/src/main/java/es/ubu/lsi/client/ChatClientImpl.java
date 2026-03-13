@@ -41,6 +41,7 @@ public class ChatClientImpl implements ChatClient {
 	private int id;
 	
 	/**MODIFICACION!: HashMap que contendrá los nombres y puertos de usuarios baneados del chat**/
+	//Mas efectiva que HashTable
 	private Map<String, Integer> puertoUsuario = new HashMap<>();
 	/**HashSet que contiene unicamente la lista de puertos baneados**/
 	private Set<Integer> puertoBaneado = new HashSet<>();
@@ -223,7 +224,7 @@ public class ChatClientImpl implements ChatClient {
 				String userMsg = scan.nextLine();
 				/*IMPLEMENTO FUNCIONALIDAD DE BAN - UNBAN a partir del mensaje*/
 				if (userMsg.startsWith("ban ")) { //BAN
-					String usuario = userMsg.substring(4);
+					String usuario = userMsg.substring(4).toLowerCase();
 					Integer puerto= clientChat.puertoUsuario.get(usuario);
 					
 					if(puerto != null) {
@@ -235,7 +236,7 @@ public class ChatClientImpl implements ChatClient {
 					continue;
 				}
 				if (userMsg.startsWith("unban ")) { //UNBAN
-					String usuario = userMsg.substring(6);
+					String usuario = userMsg.substring(6).toLowerCase();
 					Integer puerto = clientChat.puertoUsuario.get(usuario);
 					
 					if(puerto != null) {
@@ -297,7 +298,7 @@ public class ChatClientImpl implements ChatClient {
 							
 							if(divide.length >= 2) {
 								String emisor = divide[1];
-								puertoUsuario.put(emisor,  puertoId);
+								puertoUsuario.put(emisor.toLowerCase(),  puertoId);
 							}
 						}				
 					}
