@@ -24,7 +24,7 @@ public class ChatClientImpl implements ChatClient {
 	private ObjectInputStream sInput; // to read from the socket
 	/** Output stream. */
 	private ObjectOutputStream sOutput; // to write on the socket
-	/** Socket. */
+	/** Socket. Establece la conexion con servidor */
 	private Socket socket;
 
 	/** Server name/IP. */
@@ -34,7 +34,7 @@ public class ChatClientImpl implements ChatClient {
 	/** Port. */
 	private int port;
 	
-	/** Flag to keep running main thread. */
+	/** Flag to keep running main thread. */ //por si el cliente debe seguir ejecutandose
 	private boolean carryOn = true;
 
 	/** Id. */
@@ -45,7 +45,7 @@ public class ChatClientImpl implements ChatClient {
 	/**HashSet que contiene unicamente la lista de puertos baneados**/
 	private Set<Integer> puertoBaneado = new HashSet<>();
 	/**HahsSet que contiene nombres baneados (SOLO EN CASO QUE NO SE HAYA INICIADO AUN)**/
-	private Set<String> usuarioBaneado = new HashSet<>();
+	private Set<String> usuarioBaneado = new HashSet<>(); //porque no conocemos id
 	/**
 	 * Constructor.
 	 * 
@@ -230,7 +230,7 @@ public class ChatClientImpl implements ChatClient {
 					//Guardo numero de puerto
 					Integer puerto= clientChat.nombIdUsuario.get(usuario);
 					
-					if(puerto != null) {
+					if(puerto != null) { //si tengo id puerto lo almaceno
 						clientChat.puertoBaneado.add(puerto);
 					} 
 					System.out.println("Usuario " + usuario + " baneado de este chat.");
@@ -298,10 +298,10 @@ public class ChatClientImpl implements ChatClient {
 						int puertoId = msg.getId();
 						
 						if(mensaje.contains(":")) {
-							String[] divide = mensaje.split(" ");
+							String[] divide = mensaje.split(" "); //divido mensaje por espacios
 							
 							if (divide.length >= 2) {
-								String emisor = divide[1].replace(":", "").toLowerCase(); //Divido mensaje + lowercase
+								String emisor = divide[1].replace(":", "").toLowerCase(); //Divido mensaje, quito puntos + lowercase
 								nombIdUsuario.put(emisor,  puertoId);
 								//Agregamos usuarios baneados en caso de que no haya iniciado aun 
 								if (usuarioBaneado.contains(emisor)) {
@@ -310,7 +310,7 @@ public class ChatClientImpl implements ChatClient {
 							}
 						} else if (mensaje.contains("now connected")) {
 							//En caso de que nunca haya escrito
-							String[] divide = mensaje.split(" ");
+							String[] divide = mensaje.split(" "); //Divido mensaje por espacios
 							
 							if(divide.length >= 2) {
 								String emisor = divide[1].toLowerCase(); //divido mensaje + lowercase
