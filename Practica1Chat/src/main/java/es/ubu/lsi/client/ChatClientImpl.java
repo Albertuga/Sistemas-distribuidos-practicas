@@ -40,12 +40,12 @@ public class ChatClientImpl implements ChatClient {
 	/** Id. */
 	private int id;
 	
-	/**MODIFICACION!: HashMap que contendrá los nombres y puertos de usuarios baneados del chat**/
-	//Mas efectiva que HashTable
-	private Map<String, Integer> puertoUsuario = new HashMap<>();
+	/**MODIFICACION!: HashMap que contendrá los nombres e id de usuarios del chat**/
+	private Map<String, Integer> nombIdUsuario = new HashMap<>();
 	/**HashSet que contiene unicamente la lista de puertos baneados**/
 	private Set<Integer> puertoBaneado = new HashSet<>();
-
+	/**HahsSet que contiene nombres baneados (SOLO EN CASO QUE NO SE HAYA INICIADO AUN)**/
+	private Set<String> usuarioBaneado = new HashSet<>();
 	/**
 	 * Constructor.
 	 * 
@@ -221,30 +221,41 @@ public class ChatClientImpl implements ChatClient {
 			while (clientChat.carryOn) {
 				System.out.print("> ");
 				// read message from user
-				String userMsg = scan.nextLine();
+				String userMsg = scan.nextLine();		/// RECIBO MENSAJE ///
 				/*IMPLEMENTO FUNCIONALIDAD DE BAN - UNBAN a partir del mensaje*/
 				if (userMsg.startsWith("ban ")) { //BAN
 					String usuario = userMsg.substring(4).toLowerCase();
-					Integer puerto= clientChat.puertoUsuario.get(usuario);
+					//guardo nombre de usuairo por si aun no esta conectado
+					clientChat.usuarioBaneado.add(usuario);
+					//Guardo numero de puerto
+					Integer puerto= clientChat.nombIdUsuario.get(usuario);
 					
 					if(puerto != null) {
 						clientChat.puertoBaneado.add(puerto);
-						System.out.println("Usuario " + usuario + " baneado de este chat.");
-					} else { // encaso de que no tegnamos numero de puerto
-						System.out.println("Usuario no reconocido");
-					}
+					} 
+					System.out.println("Usuario " + usuario + " baneado de este chat.");
+					
+					//Mensaje al servidor indicando que hemos baneado
+					client.sendMessage(new ChatMessage(clientChat.id, MessageType.MESSAGE, 
+							clientChat.username + " ha baneado a " + usuario));
 					continue;
 				}
 				if (userMsg.startsWith("unban ")) { //UNBAN
 					String usuario = userMsg.substring(6).toLowerCase();
-					Integer puerto = clientChat.puertoUsuario.get(usuario);
+					//posibilidad de desbanear si aun no se ha conectado
+					clientChat.usuarioBaneado.remove(usuario);
+					Integer puerto = clientChat.nombIdUsuario.get(usuario);
 					
 					if(puerto != null) {
 						clientChat.puertoBaneado.remove(puerto);
-						System.out.println("Usuario "+usuario+" desbloqueado.");
 					}
+					System.out.println("Usuario "+usuario+" desbloqueado.");
+					
+					//Avisamos al servidor que hemos desbaneado al usuario
+					client.sendMessage(new ChatMessage(clientChat.id, MessageType.MESSAGE, 
+							clientChat.username + " ha desbloqueado a " + usuario));
 					continue;
-				}
+				} ///// fin BAN/UNBAN
 				// logout if message is LOGOUT
 				if (userMsg.equalsIgnoreCase(MessageType.LOGOUT.toString())) {
 					client.sendMessage(new ChatMessage(clientChat.id, MessageType.LOGOUT,
@@ -259,7 +270,8 @@ public class ChatClientImpl implements ChatClient {
 					break;
 				
 				} else { // default to ordinary message
-					client.sendMessage(new ChatMessage(clientChat.id, MessageType.MESSAGE, userMsg));
+					String autoria = "Alberto patrocina el mensaje: " +userMsg;
+					client.sendMessage(new ChatMessage(clientChat.id, MessageType.MESSAGE, autoria));
 				}
 				System.out.println();
 			} // try with resources
@@ -289,16 +301,24 @@ public class ChatClientImpl implements ChatClient {
 							String[] divide = mensaje.split(" ");
 							
 							if (divide.length >= 2) {
-								String emisor = divide[1].replace(":", "");
-								puertoUsuario.put(emisor,  puertoId);
+								String emisor = divide[1].replace(":", "").toLowerCase(); //Divido mensaje + lowercase
+								nombIdUsuario.put(emisor,  puertoId);
+								//Agregamos usuarios baneados en caso de que no haya iniciado aun 
+								if (usuarioBaneado.contains(emisor)) {
+									puertoBaneado.add(puertoId);
+								}
 							}
 						} else if (mensaje.contains("now connected")) {
 							//En caso de que nunca haya escrito
 							String[] divide = mensaje.split(" ");
 							
 							if(divide.length >= 2) {
-								String emisor = divide[1];
-								puertoUsuario.put(emisor.toLowerCase(),  puertoId);
+								String emisor = divide[1].toLowerCase(); //divido mensaje + lowercase
+								nombIdUsuario.put(emisor,  puertoId);
+								//Agregamos usuarios baneados en caso de que no haya iniciado aun 
+								if (usuarioBaneado.contains(emisor)) {
+									puertoBaneado.add(puertoId);
+								}
 							}
 						}				
 					}
