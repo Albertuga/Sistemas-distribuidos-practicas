@@ -1,0 +1,69 @@
+services:
+  mysqldb:
+    image: mysql:8.0.31-oracle
+    restart: unless-stopped
+    env_file: ./.env
+    environment:
+      - MYSQL_ROOT_PASSWORD=$MYSQLDB_ROOT_PASSWORD_DES
+      - MYSQL_DATABASE=$MYSQLDB_DATABASE_DES
+    ports:
+      - $MYSQLDB_LOCAL_PORT:$MYSQLDB_DOCKER_PORT_DES
+    volumes:
+      - db:/var/lib/mysql
+    networks:
+      - app-network
+  postgres-db:
+    image: postgres:12
+    restart: always
+    env_file: ./.env
+    environment:
+      POSTGRES_DB: $POSTGRES_DATABASE_DES
+      POSTGRES_USER: $POSTGRES_USER_DES
+      POSTGRES_PASSWORD: $POSTGRES_ROOT_PASSWORD_DES
+    ports:
+      - $POSTGRES_LOCAL_PORT_DES:$POSTGRES_DOCKER_PORT_DES
+    volumes:
+      - postgresdata:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+  webapp:
+    depends_on:
+      - mysqldb
+    build: ./
+    restart: on-failure
+    env_file: ./.env
+
+    ports:
+      - $SPRING_LOCAL_PORT_DES:$SPRING_DOCKER_PORT_DES
+    environment:
+      - APP_CONTAINER_NAME_DES=$APP_CONTAINER_NAME_DES
+      - SPRING-DATASOURCE-USERNAME=$MYSQLDB_USER_DES
+      - SPRING-DATASOURCE-PASSWORD=$MYSQLDB_ROOT_PASSWORD_DES
+      - SPRING-DATASOURCE-DRIVER-CLASS-NAME=$SPRING-DATASOURCE-DRIVER-CLASS-NAME_DES
+      - SPRING-JPA-HIBERNATE-DLL-AUTO=$SPRING-JPA-HIBERNATE-DLL-AUT_DES
+      - SPRING-JPA-SHOW-SQL=false
+      - SERVER-PORT=$SPRING_DOCKER_PORT_DES
+      - SPRING-DATASOURCE-URL=jdbc:mysql://mysqldb:$MYSQLDB_DOCKER_PORT_DES/$MYSQLDB_DATABASE_DES?useSSL=false&allowPublicKeyRetrieval=true
+    networks:
+      - app-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - .m2:/root/.m2
+      - type: bind
+        source: ./certificates
+        target: /certificates
+    stdin_open: true
+    tty: true
+networks:
+  app-network:
+    driver: bridge
+volumes:
+  db:
+  postgresdata:
