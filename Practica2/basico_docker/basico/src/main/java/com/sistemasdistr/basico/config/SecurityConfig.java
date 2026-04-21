@@ -38,13 +38,24 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .userDetailsService(customUserDetailsService)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/").permitAll()
+                        // 1. Solo permitimos el acceso público a la pantalla de login
+                        .requestMatchers("/login").permitAll()
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/users/**").hasRole("ADMIN")
+                        
+                        // 2. IMPORTANTE: Hemos quitado el "/", así que ahora CUALQUIER otra ruta exige estar logueado
                         .anyRequest().authenticated()
                 )
-                .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
-                .logout(LogoutConfigurer::permitAll);
+                .formLogin(form -> form
+                        // 3. Le decimos que use nuestra plantilla "login.html"
+                        .loginPage("/login")
+                        // 4. Si el login tiene éxito, lo mandamos al panel principal ("/")
+                        .defaultSuccessUrl("/", true)
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutSuccessUrl("/login?logout")
+                        .permitAll()
+                );
 
         return http.build();
     }
