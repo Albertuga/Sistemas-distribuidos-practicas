@@ -1,9 +1,33 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel Principal</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f4f9;}
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .btn { display: inline-block; padding: 10px 15px; margin: 5px 0; background: #dc3545; color: white; text-decoration: none; border-radius: 4px; }
+        .btn:hover { background: #c82333; }
+        .logout { float: right; background: #6c757d; }
+    </style>
+</head>
 <body>
+    <div class="card">
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit" class="btn logout">Cerrar Sesión</button>
+        </form>
+        <h1>Panel Principal - Práctica 2</h1>
+        <p>Bienvenido al sistema de gestión de excepciones.</p>
+    </div>
 
-<h1>My First Heading</h1>
-<p>My first paragraph.</p>
-
+    <div class="card">
+        <h2>Simulador de Excepciones (API Python)</h2>
+        <p>Haz clic en los siguientes enlaces para forzar excepciones en el microservicio de Python y ver cómo Spring Boot las captura y traduce:</p>
+        <ul>
+            <li><a class="btn" th:href="@{/simular/archivo}">Forzar Error: Lectura de Archivos</a></li>
+            <li><a class="btn" th:href="@{/simular/bd}">Forzar Error: Base de Datos</a></li>
+            <li><a class="btn" th:href="@{/simular/pokemon}">Forzar Error: API de Pokémon</a></li>
+        </ul>
+    </div>
 </body>
 </html>
