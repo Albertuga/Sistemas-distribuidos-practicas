@@ -30,7 +30,7 @@ services:
   rabbitmq:
     image: rabbitmq:3-management
     ports:
-      - "5672:5672"
+      - "9700:5672"
       - "15672:15672"
   webapp:
     depends_on:
@@ -43,13 +43,13 @@ services:
       - $SPRING_LOCAL_PORT_DES:$SPRING_DOCKER_PORT_DES
     environment:
       - APP_CONTAINER_NAME_DES=$APP_CONTAINER_NAME_DES
-      - SPRING-DATASOURCE-USERNAME=$MYSQLDB_USER_DES
-      - SPRING-DATASOURCE-PASSWORD=$MYSQLDB_ROOT_PASSWORD_DES
-      - SPRING-DATASOURCE-DRIVER-CLASS-NAME=$SPRING-DATASOURCE-DRIVER-CLASS-NAME_DES
-      - SPRING-JPA-HIBERNATE-DLL-AUTO=$SPRING-JPA-HIBERNATE-DLL-AUT_DES
-      - SPRING-JPA-SHOW-SQL=false
-      - SERVER-PORT=$SPRING_DOCKER_PORT_DES
-      - SPRING-DATASOURCE-URL=jdbc:mysql://mysqldb:$MYSQLDB_DOCKER_PORT_DES/$MYSQLDB_DATABASE_DES?useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=$MYSQLDB_USER_DES
+      - SPRING_DATASOURCE_PASSWORD=$MYSQLDB_ROOT_PASSWORD_DES
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=${SPRING_DATASOURCE_DRIVER_CLASS_NAME_DES}
+      - SPRING_JPA_HIBERNATE_DLL_AUTO=${SPRING_JPA_HIBERNATE_DLL_AUT_DES}
+      - SPRING_JPA_SHOW_SQL=false
+      - SERVER_PORT=$SPRING_DOCKER_PORT_DES
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:$MYSQLDB_DOCKER_PORT_DES/$MYSQLDB_DATABASE_DES?useSSL=false&allowPublicKeyRetrieval=true
     networks:
       - app-network
     extra_hosts:
@@ -61,6 +61,13 @@ services:
         target: /certificates
     stdin_open: true
     tty: true
+  python-api:
+    build: ../../API_PY
+    restart: always
+    ports:
+      - "5000:5000"
+    networks:
+      - app-network
 networks:
   app-network:
     driver: bridge
