@@ -4,6 +4,7 @@ Practicas universitarias de la asignatura Sistemas Distribuidos
 #### Repositorio de practicas
 
 ###Practica 2: **Desarrollar un Frontend , un backend y un API con Flask.** implementando tambien tecnologias como spring boot, JPA, Hibernate y Thymeleaf.
+ 
  ### Instrucciones
  
 1) Clonamos el Repo
