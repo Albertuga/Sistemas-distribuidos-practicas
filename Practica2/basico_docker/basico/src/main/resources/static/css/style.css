@@ -1,0 +1,66 @@
+/*Como tengo unos cuantos colores ya predeterminados para la pagina, almaceno estos colores que definiran el 
+estilo enu un archivo CSS para su uso en cada parte del proyecto*/
+:root {
+    --bg-dark: #0f0f13;       /* Fondo principal ultra oscuro */
+    --bg-card: #1a1a24;       /* Fondo para tarjetas y menús */
+    --neon-purple: #8B5CF6;   /* Tu morado */
+    --neon-green: #00fa9a;    /* Verde acento */
+    --text-main: #e2e8f0;     /* Texto claro y legible */
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+/* Efecto de texto neón morado */
+.text-neon-purple {
+    color: var(--neon-purple);
+    text-shadow: 0 0 5px rgba(139, 92, 246, 0.5), 0 0 15px rgba(139, 92, 246, 0.3);
+}
+
+/* Efecto de texto neón verde para llamar la atención */
+.text-neon-green {
+    color: var(--neon-green);
+    text-shadow: 0 0 5px rgba(0, 250, 154, 0.5);
+}
+
+/* Botón minimalista con brillo en el borde (Hover) */
+.btn-neon {
+    background-color: transparent;
+    color: var(--text-main);
+    border: 1px solid var(--neon-purple);
+    transition: all 0.3s ease;
+    border-radius: 4px;
+}
+
+.btn-neon:hover {
+    background-color: rgba(139, 92, 246, 0.1);
+    color: #fff;
+    box-shadow: 0 0 10px rgba(139, 92, 246, 0.5), inset 0 0 10px rgba(139, 92, 246, 0.5);
+    border-color: var(--neon-purple);
+}
+
+/* Barra de navegación */
+.navbar-custom {
+    background-color: var(--bg-card) !important;
+    border-bottom: 1px solid rgba(139, 92, 246, 0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.navbar-custom .nav-link {
+    color: var(--text-main) !important;
+    transition: color 0.3s;
+}
+
+.navbar-custom .nav-link:hover {
+    color: var(--neon-green) !important;
+}
+
+/* Tarjetas minimalistas */
+.card-dark {
+    background-color: var(--bg-card);
+    border: 1px solid #2d2d3d;
+    border-radius: 8px;
+}
