@@ -3,9 +3,9 @@ estilo enu un archivo CSS para su uso en cada parte del proyecto*/
 :root {
     --bg-dark: #0f0f13;       /* Fondo principal ultra oscuro */
     --bg-card: #1a1a24;       /* Fondo para tarjetas y menús */
-    --neon-purple: #8B5CF6;   /* Tu morado */
+    --neon-purple: #8B5CF6;   /* Morado oscuro (tomo referencias del logo de obsidian) */
     --neon-green: #00fa9a;    /* Verde acento */
-    --text-main: #e2e8f0;     /* Texto claro y legible */
+    --text-main: #e2e8f0;     /* Texto claro y legible y que no fatigue */
 }
 
 body {
