@@ -2,32 +2,55 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Panel Principal</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f4f9;}
-        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        .btn { display: inline-block; padding: 10px 15px; margin: 5px 0; background: #dc3545; color: white; text-decoration: none; border-radius: 4px; }
-        .btn:hover { background: #c82333; }
-        .logout { float: right; background: #6c757d; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameStore</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-    <div class="card">
-        <form th:action="@{/logout}" method="post" style="display:inline;">
-            <button type="submit" class="btn logout">Cerrar Sesión</button>
-        </form>
-        <h1>Panel Principal - Práctica 2</h1>
-        <p>Bienvenido al sistema de gestión de excepciones.</p>
+
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="container mt-5">
+        <div class="row text-center mb-5">
+            <div class="col">
+                <h1 class="display-4 fw-bold">Bienvenido a <span class="text-neon-purple">NEXUS</span> GAMES</h1>
+                <p class="lead text-neon-green mt-3">Panel de Administración Avanzado</p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card card-dark p-4 h-100 text-center">
+                    <h3 class="text-neon-purple"><i class="bi bi-tags"></i></h3>
+                    <h4 class="mt-2 text-white">Categorías</h4>
+                    <p class="text-secondary">Gestiona los géneros de los videojuegos de la tienda.</p>
+                    <a th:href="@{/categorias}" class="btn btn-neon mt-auto">Administrar</a>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card card-dark p-4 h-100 text-center">
+                    <h3 class="text-neon-purple"><i class="bi bi-controller"></i></h3>
+                    <h4 class="mt-2 text-white">Videojuegos</h4>
+                    <p class="text-secondary">Añade, edita o elimina títulos de tu catálogo.</p>
+                    <a th:href="@{/videojuegos}" class="btn btn-neon mt-auto">Administrar</a>
+                </div>
+            </div>
+
+            <div class="col-md-4" sec:authorize="hasAuthority('ROLE_ADMIN')">
+                <div class="card card-dark p-4 h-100 text-center border-neon-green">
+                    <h3 class="text-neon-green"><i class="bi bi-people"></i></h3>
+                    <h4 class="mt-2 text-white">Usuarios</h4>
+                    <p class="text-secondary">Mantenimiento y control de accesos al sistema.</p>
+                    <a th:href="@{/usuarios}" class="btn btn-neon mt-auto">Administrar</a>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="card">
-        <h2>Simulador de Excepciones (API Python)</h2>
-        <p>Haz clic en los siguientes enlaces para forzar excepciones en el microservicio de Python y ver cómo Spring Boot las captura y traduce:</p>
-        <ul>
-            <li><a class="btn" th:href="@{/simular/archivo}">Forzar Error: Lectura de Archivos</a></li>
-            <li><a class="btn" th:href="@{/simular/bd}">Forzar Error: Base de Datos</a></li>
-            <li><a class="btn" th:href="@{/simular/pokemon}">Forzar Error: API de Pokémon</a></li>
-        </ul>
-    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

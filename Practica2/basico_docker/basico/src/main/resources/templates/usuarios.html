@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Usuarios - Nexus Games</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-white"><i class="bi bi-people text-neon-green"></i> Mantenimiento de Usuarios</h2>
+            <a th:href="@{/usuarios/nuevo}" class="btn btn-neon"><i class="bi bi-person-plus"></i> Añadir Usuario</a>
+        </div>
+
+        <div class="card card-dark p-0 overflow-hidden border-neon-green">
+            <table class="table table-dark table-hover mb-0 align-middle">
+                <thead>
+                    <tr>
+                        <th class="text-neon-green">ID</th>
+                        <th class="text-neon-green">Username</th>
+                        <th class="text-neon-green">Nombre Completo</th>
+                        <th class="text-neon-green">Email</th>
+                        <th class="text-neon-green">Rol</th>
+                        <th class="text-neon-green text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="user : ${usuarios}">
+                        <td th:text="${user.id}">1</td>
+                        <td th:text="${user.username}" class="fw-bold">admin</td>
+                        <td th:text="${user.nombreUsuario}">Administrador</td>
+                        <td th:text="${user.emailuser}">admin@test.com</td>
+                        <td>
+                            <span class="badge bg-secondary" th:text="${user.userRole != null ? user.userRole.roleName : 'Sin Rol'}">ROLE_ADMIN</span>
+                        </td>
+                        <td class="text-center">
+                            <a th:href="@{/usuarios/editar/{id}(id=${user.id})}" class="btn btn-sm btn-outline-warning me-2" title="Editar">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a th:if="${user.username != 'admin'}" th:href="@{/usuarios/eliminar/{id}(id=${user.id})}" class="btn btn-sm btn-outline-danger" title="Eliminar" onclick="return confirm('¿Seguro que deseas eliminar a este usuario del sistema?');">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

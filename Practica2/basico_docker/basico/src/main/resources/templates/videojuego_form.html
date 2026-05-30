@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Videojuego - Nexus Games</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="container mt-5 mb-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card card-dark p-4">
+                    <h3 class="text-center text-white mb-4">
+                        <span th:if="${videojuego.id == null}"><i class="bi bi-plus-circle text-neon-purple"></i> Añadir Videojuego</span>
+                        <span th:if="${videojuego.id != null}"><i class="bi bi-pencil text-neon-green"></i> Editar Videojuego</span>
+                    </h3>
+
+                    <form th:action="@{/videojuegos/guardar}" th:object="${videojuego}" method="post">
+                        <input type="hidden" th:field="*{id}" />
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-neon-green">Título</label>
+                                <input type="text" class="form-control bg-dark text-white border-secondary" th:field="*{titulo}" required placeholder="Ej: The Legend of Zelda">
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-neon-green">Categoría</label>
+                                <select class="form-select bg-dark text-white border-secondary" th:field="*{categoria.id}" required>
+                                    <option value="" disabled selected>Selecciona una categoría...</option>
+                                    <option th:each="cat : ${listaCategorias}" 
+                                            th:value="${cat.id}" 
+                                            th:text="${cat.nombre}">
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-neon-green">Precio (€)</label>
+                                <input type="number" step="0.01" min="0" class="form-control bg-dark text-white border-secondary" th:field="*{precio}" required placeholder="0.00">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-neon-green">Stock disponible</label>
+                                <input type="number" min="0" class="form-control bg-dark text-white border-secondary" th:field="*{stock}" required placeholder="Unidades">
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label text-neon-green">Sinopsis / Descripción</label>
+                            <textarea class="form-control bg-dark text-white border-secondary" th:field="*{sinopsis}" rows="4" placeholder="De qué trata el juego..."></textarea>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a th:href="@{/videojuegos}" class="btn btn-outline-secondary me-md-2">Cancelar</a>
+                            <button type="submit" class="btn btn-neon">Guardar en Catálogo</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

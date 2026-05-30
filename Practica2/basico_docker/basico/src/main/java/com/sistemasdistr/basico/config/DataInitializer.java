@@ -25,8 +25,8 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Comprobamos si el usuario ya existe en la base de datos
-        if (userRepository.findUserByUsername("admin") == null) {
+        // Comprobamos si la tabla de roles está vacía
+        if (roleRepository.count() == 0) {
             
             // 1. Creamos el Rol de Administrador
             Role adminRole = new Role();
@@ -34,18 +34,25 @@ public class DataInitializer implements CommandLineRunner {
             adminRole.setShowOnCreate(1);
             roleRepository.save(adminRole);
 
-            // 2. Creamos el Usuario
-            User adminUser = new User();
-            adminUser.setUsername("admin");
-            // Usamos el PasswordEncoder para guardar la contraseña de forma segura
-            adminUser.setPassword(passwordEncoder.encode("1234")); 
-            adminUser.setNombreUsuario("Administrador");
-            adminUser.setEmailuser("admin@test.com");
-            adminUser.setFechaUltimoAcceso(LocalDateTime.now());
-            adminUser.setUserRole(adminRole);
+            // 2. Creamos el Rol de Usuario Normal
+            Role userRole = new Role();
+            userRole.setRoleName("ROLE_USER");
+            userRole.setShowOnCreate(1);
+            roleRepository.save(userRole);
 
-            userRepository.save(adminUser);
-            System.out.println("✅ Usuario 'admin' con contraseña '1234' creado con éxito en la BD.");
+            // 3. Creamos el Usuario Admin
+            if (userRepository.findUserByUsername("admin") == null) {
+                User adminUser = new User();
+                adminUser.setUsername("admin");
+                adminUser.setPassword(passwordEncoder.encode("1234")); 
+                adminUser.setNombreUsuario("Administrador");
+                adminUser.setEmailuser("admin@test.com");
+                adminUser.setFechaUltimoAcceso(LocalDateTime.now());
+                adminUser.setUserRole(adminRole);
+
+                userRepository.save(adminUser);
+                System.out.println("✅ Roles iniciales y usuario 'admin' creados con éxito.");
+            }
         }
     }
 }

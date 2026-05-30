@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Categoría - Nexus Games</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card card-dark p-4">
+                    <h3 class="text-center text-white mb-4">
+                        <span th:if="${categoria.id == null}"><i class="bi bi-plus-circle text-neon-purple"></i> Nueva Categoría</span>
+                        <span th:if="${categoria.id != null}"><i class="bi bi-pencil text-neon-green"></i> Editar Categoría</span>
+                    </h3>
+
+                    <form th:action="@{/categorias/guardar}" th:object="${categoria}" method="post">
+                        <input type="hidden" th:field="*{id}" />
+
+                        <div class="mb-3">
+                            <label class="form-label text-neon-green">Nombre de la Categoría</label>
+                            <input type="text" class="form-control bg-dark text-white border-secondary" th:field="*{nombre}" required placeholder="Ej: RPG, Shooter, Aventura...">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label text-neon-green">Descripción</label>
+                            <textarea class="form-control bg-dark text-white border-secondary" th:field="*{descripcion}" rows="3" placeholder="Breve descripción del género..."></textarea>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a th:href="@{/categorias}" class="btn btn-outline-secondary me-md-2">Cancelar</a>
+                            <button type="submit" class="btn btn-neon">Guardar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

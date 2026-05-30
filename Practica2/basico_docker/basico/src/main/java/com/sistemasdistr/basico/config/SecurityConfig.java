@@ -39,8 +39,13 @@ public class SecurityConfig {
                 .userDetailsService(customUserDetailsService)
                 .authorizeHttpRequests(auth -> auth
                         // 1. Solo permitimos el acceso público a la pantalla de login
-                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/login", "/css/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
+                        
+                     // RUTAS EXCLUSIVAS DEL ADMINISTRADOR (Tienen que tener ROLE_ADMIN en la BD)
+                        .requestMatchers("/usuarios/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/categorias/nueva", "/categorias/editar/**", "/categorias/eliminar/**", "/categorias/guardar").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/videojuegos/nuevo", "/videojuegos/editar/**", "/videojuegos/eliminar/**", "/videojuegos/guardar").hasAuthority("ROLE_ADMIN")
                         
                         // 2. IMPORTANTE: Hemos quitado el "/", así que ahora CUALQUIER otra ruta exige estar logueado
                         .anyRequest().authenticated()

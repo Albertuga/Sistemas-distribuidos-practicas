@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Global - Nexus Games</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .chat-container { height: 60vh; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 8px; padding: 15px; }
+        .mensaje { margin-bottom: 15px; }
+        .mensaje .emisor { font-weight: bold; color: var(--neon-green); margin-bottom: 2px; }
+        .mensaje.yo .emisor { color: var(--neon-purple); text-align: right; }
+        .mensaje.yo .texto { background: rgba(139, 92, 246, 0.2); border: 1px solid var(--neon-purple); text-align: right; float: right; clear: both; color: #ffffff; text-shadow: 0px 1px 2px rgba(0,0,0,0.8); }
+        .mensaje .texto { background: rgba(26, 26, 36, 0.9); padding: 8px 15px; border-radius: 15px; display: inline-block; border: 1px solid #333; color: #ffffff; text-shadow: 0px 1px 2px rgba(0,0,0,0.8); }
+        .mensaje.evento { text-align: center; color: #888; font-style: italic; font-size: 0.9em; margin-bottom: 10px; }
+        .clearfix::after { content: ""; clear: both; display: table; }
+    </style>
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card card-dark p-4 border-neon-purple">
+                    <h3 class="text-white mb-3"><i class="bi bi-chat-dots text-neon-purple"></i> Chat Global</h3>
+                    
+                    <div id="chat-box" class="chat-container border-secondary mb-3"></div>
+
+                    <form id="chat-form" class="d-flex">
+                        <input type="text" id="message-input" class="form-control bg-dark text-white border-secondary me-2" placeholder="Escribe un mensaje..." autocomplete="off" required>
+                        <button type="submit" class="btn btn-neon">Enviar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+    <script th:inline="javascript">
+        var username = /*[[${#authentication.name}]]*/ 'Usuario';
+    </script>
+
+    <script>
+        var stompClient = null;
+        var chatBox = document.querySelector('#chat-box');
+
+        // Conectar al servidor al cargar la página
+        function connect() {
+            var socket = new SockJS('/ws');
+            stompClient = Stomp.over(socket);
+            stompClient.debug = null; // Ocultar logs en consola
+
+            stompClient.connect({}, function (frame) {
+                // Suscribirse al canal público
+                stompClient.subscribe('/topic/public', function (payload) {
+                    var message = JSON.parse(payload.body);
+                    mostrarMensaje(message);
+                });
+
+                // Avisar que hemos entrado
+                stompClient.send("/app/chat.addUser", {}, JSON.stringify({sender: username, type: 'JOIN'}));
+            });
+        }
+
+        // Enviar mensaje al pulsar el botón
+        document.querySelector('#chat-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var messageInput = document.querySelector('#message-input');
+            var messageContent = messageInput.value.trim();
+
+            if(messageContent && stompClient) {
+                var chatMessage = {
+                    sender: username,
+                    content: messageContent,
+                    type: 'CHAT'
+                };
+                stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
+                messageInput.value = '';
+            }
+        });
+
+        // Dibujar el mensaje en la pantalla
+        function mostrarMensaje(message) {
+            var messageElement = document.createElement('div');
+            messageElement.classList.add('mensaje', 'clearfix');
+
+            if (message.type === 'JOIN') {
+                messageElement.classList.add('evento');
+                messageElement.textContent = message.sender + ' se ha unido al chat.';
+            } else if (message.type === 'LEAVE') {
+                messageElement.classList.add('evento');
+                messageElement.textContent = message.sender + ' ha abandonado el chat.';
+            } else {
+                if (message.sender === username) {
+                    messageElement.classList.add('yo');
+                }
+                var emisorElement = document.createElement('div');
+                emisorElement.classList.add('emisor');
+                emisorElement.textContent = message.sender;
+
+                var textoElement = document.createElement('div');
+                textoElement.classList.add('texto');
+                textoElement.textContent = message.content;
+
+                messageElement.appendChild(emisorElement);
+                messageElement.appendChild(textoElement);
+            }
+
+            chatBox.appendChild(messageElement);
+            chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll hacia abajo
+        }
+
+        // Iniciar conexión
+        connect();
+    </script>
+</body>
+</html>
