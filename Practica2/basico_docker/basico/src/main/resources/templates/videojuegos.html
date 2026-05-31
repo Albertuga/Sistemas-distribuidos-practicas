@@ -34,7 +34,11 @@
                     </tr>
                     <tr th:each="juego : ${videojuegos}">
                         <td th:text="${juego.id}">1</td>
-                        <td th:text="${juego.titulo}" class="fw-bold">Elden Ring</td>
+                        <td>
+                            <a th:href="@{/videojuegos/detalle/{id}(id=${juego.id})}" class="text-neon-purple text-decoration-none fw-bold" style="transition: 0.3s;" onmouseover="this.style.textShadow='0 0 10px rgba(139, 92, 246, 0.8)'" onmouseout="this.style.textShadow='none'" th:text="${juego.titulo}">
+                                Título del Juego
+                            </a>
+                        </td>
                         <td th:text="${juego.categoria.nombre}">RPG</td>
                         <td th:text="${juego.precio + ' €'}">59.99 €</td>
                         <td>

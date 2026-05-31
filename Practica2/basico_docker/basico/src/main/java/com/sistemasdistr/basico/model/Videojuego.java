@@ -21,6 +21,10 @@ public class Videojuego {
     @Column(length = 500)
     private String sinopsis;
 
+    //CAMPO PARA LA IMAGEN DE VIDEOJUEGHOS
+    @Column(length = 1000)
+    private String imagenUrl;
+
     // Relación: Muchos videojuegos pertenecen a una categoría
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categoria_id", nullable = false)
@@ -28,6 +32,14 @@ public class Videojuego {
 
     // Constructor vacío necesario si no error
     public Videojuego() {}
+
+	public String getImagenUrl() {
+		return imagenUrl;
+	}
+
+	public void setImagenUrl(String imagenUrl) {
+		this.imagenUrl = imagenUrl;
+	}
 
 	public Long getId() {
 		return id;

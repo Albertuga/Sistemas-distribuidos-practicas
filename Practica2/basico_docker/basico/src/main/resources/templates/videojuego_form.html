@@ -50,7 +50,10 @@
                                 <input type="number" min="0" class="form-control bg-dark text-white border-secondary" th:field="*{stock}" required placeholder="Unidades">
                             </div>
                         </div>
-
+                        <div class="mb-3">
+                            <label class="form-label text-neon-green">URL de la Portada (Imagen)</label>
+                            <input type="url" class="form-control bg-dark text-white border-secondary" th:field="*{imagenUrl}" placeholder="https://ejemplo.com/imagen.jpg">
+                        </div>
                         <div class="mb-4">
                             <label class="form-label text-neon-green">Sinopsis / Descripción</label>
                             <textarea class="form-control bg-dark text-white border-secondary" th:field="*{sinopsis}" rows="4" placeholder="De qué trata el juego..."></textarea>

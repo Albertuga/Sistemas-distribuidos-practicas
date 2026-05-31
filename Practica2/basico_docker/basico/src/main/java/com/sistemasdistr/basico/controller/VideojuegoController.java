@@ -59,5 +59,14 @@ public class VideojuegoController {
         videojuegoRepository.deleteById(id);
         return "redirect:/videojuegos";
     }
+    
+ // Read: Mostrar Ficha de Detalles de un Juego
+    @GetMapping("/detalle/{id}")
+    public String verDetalles(@PathVariable Long id, Model model) {
+        Videojuego videojuego = videojuegoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("ID de videojuego inválido: " + id));
+        model.addAttribute("juego", videojuego);
+        return "videojuego_detalle";
+    }
 	
 }

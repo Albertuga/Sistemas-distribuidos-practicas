@@ -74,6 +74,7 @@ public class DataInitializer implements CommandLineRunner {
                 v1.setStock(15);
                 v1.setSinopsis("Ciudad futurista llena de neones y peligros.");
                 v1.setCategoria(catRpg);
+                v1.setImagenUrl("https://static.wikia.nocookie.net/playstation5617/images/8/81/CP77.png/revision/latest?cb=20220103200708&path-prefix=es");
 
                 Videojuego v2 = new Videojuego();
                 v2.setTitulo("DOOM Eternal");
@@ -81,6 +82,7 @@ public class DataInitializer implements CommandLineRunner {
                 v2.setStock(5);
                 v2.setSinopsis("Acción frenética contra demonios de otra dimensión.");
                 v2.setCategoria(catAccion);
+                v2.setImagenUrl("https://image.api.playstation.com/vulcan/ap/rnd/202010/0114/ERNPc4gFqeRDG1tYQIfOKQtM.png");
 
                 videojuegoRepository.save(v1);
                 videojuegoRepository.save(v2);

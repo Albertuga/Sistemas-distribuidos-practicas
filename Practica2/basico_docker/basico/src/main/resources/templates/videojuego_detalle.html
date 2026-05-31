@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ficha del Juego - Nexus Games</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .portada-juego {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid var(--neon-purple);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="container mt-5 mb-5">
+        <a th:href="@{/videojuegos}" class="btn btn-outline-secondary mb-4"><i class="bi bi-arrow-left"></i> Volver al Catálogo</a>
+
+        <div class="card card-dark p-4 border-neon-purple">
+            <div class="row g-5">
+                
+                <div class="col-md-5 text-center">
+                    <img th:if="${juego.imagenUrl != null and !juego.imagenUrl.isEmpty()}" th:src="${juego.imagenUrl}" class="portada-juego" alt="Portada del juego">
+                    <div th:unless="${juego.imagenUrl != null and !juego.imagenUrl.isEmpty()}" class="portada-juego d-flex align-items-center justify-content-center bg-dark text-secondary">
+                        <i class="bi bi-image" style="font-size: 5rem;"></i>
+                    </div>
+                </div>
+
+                <div class="col-md-7">
+                    <span class="badge bg-purple-glow text-neon-purple border border-purple mb-2" style="background-color: rgba(139, 92, 246, 0.1);" th:text="${juego.categoria.nombre}">Categoría</span>
+                    
+                    <h1 class="text-white fw-bold mb-3" th:text="${juego.titulo}">Título del Juego</h1>
+                    
+                    <h2 class="text-neon-green fw-bold mb-4" th:text="${juego.precio + ' €'}">0.00 €</h2>
+                    
+                    <div class="mb-4">
+                        <h5 class="text-secondary border-bottom border-secondary pb-2 mb-3">Sinopsis</h5>
+                        <p class="text-white lh-lg" th:text="${juego.sinopsis}">Descripción del juego...</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="text-secondary border-bottom border-secondary pb-2 mb-3">Disponibilidad</h5>
+                        <p class="text-white">
+                            <i class="bi bi-box-seam text-neon-green"></i> Stock en almacén: 
+                            <span th:class="${juego.stock > 0 ? 'fw-bold text-neon-green' : 'fw-bold text-danger'}" th:text="${juego.stock + ' unidades'}">0 unidades</span>
+                        </p>
+                    </div>
+
+                    <div class="mt-auto">
+                        <a th:href="@{/carrito/add/{id}(id=${juego.id})}" th:classappend="${juego.stock == 0 ? 'disabled' : ''}" class="btn btn-neon btn-lg w-100" style="border-color: var(--neon-green); color: var(--neon-green);">
+                            <i class="bi bi-cart-plus"></i> Añadir al Carrito
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
