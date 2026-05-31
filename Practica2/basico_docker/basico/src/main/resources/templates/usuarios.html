@@ -38,9 +38,16 @@
                             <span class="badge bg-secondary" th:text="${user.userRole != null ? user.userRole.roleName : 'Sin Rol'}">ROLE_ADMIN</span>
                         </td>
                         <td class="text-center">
+                        <!-- Botón Banear / Desbanear -->
+                        	<a th:if="${user.username != 'admin'}" th:href="@{/usuarios/estado/{id}(id=${user.id})}" 
+                               th:class="${user.baneado ? 'btn btn-sm btn-outline-success me-2' : 'btn btn-sm btn-outline-secondary me-2'}" 
+                               th:title="${user.baneado ? 'Desbloquear Chat' : 'Bloquear Chat'}">
+                                <i th:class="${user.baneado ? 'bi bi-unlock' : 'bi bi-lock'}"></i>
+                            </a>
                             <a th:href="@{/usuarios/editar/{id}(id=${user.id})}" class="btn btn-sm btn-outline-warning me-2" title="Editar">
                                 <i class="bi bi-pencil"></i>
                             </a>
+                            <!-- Evitamos que se pueda eliminar a si mismo -->
                             <a th:if="${user.username != 'admin'}" th:href="@{/usuarios/eliminar/{id}(id=${user.id})}" class="btn btn-sm btn-outline-danger" title="Eliminar" onclick="return confirm('¿Seguro que deseas eliminar a este usuario del sistema?');">
                                 <i class="bi bi-trash"></i>
                             </a>

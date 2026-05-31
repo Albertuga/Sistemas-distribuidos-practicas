@@ -20,6 +20,10 @@
                 <p class="lead text-neon-green mt-3">Panel de Administración Avanzado</p>
             </div>
         </div>
+        <!-- Alerta de Baneo -->
+        <div th:if="${param.error != null and param.error[0] == 'baneado'}" class="alert alert-danger bg-dark border-danger text-danger text-center mb-4">
+            <i class="bi bi-exclamation-triangle-fill"></i> Acceso denegado: Has sido silenciado temporalmente por un administrador y no puedes acceder al chat.
+        </div>
 
         <div class="row g-4">
             <div class="col-md-4">

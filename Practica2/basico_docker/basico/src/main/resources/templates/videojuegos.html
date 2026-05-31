@@ -40,14 +40,19 @@
                         <td>
                             <span th:if="${juego.stock > 0}" th:text="${juego.stock}" class="badge bg-success">10</span>
                             <span th:if="${juego.stock == 0}" class="badge bg-danger">Agotado</span>
-                        </td>
-                        <td sec:authorize="hasAuthority('ROLE_ADMIN')" class="text-center">
-                            <a th:href="@{/videojuegos/editar/{id}(id=${juego.id})}" class="btn btn-sm btn-outline-warning me-2" title="Editar">
-                                <i class="bi bi-pencil"></i>
+                        <td class="text-center">
+                            <a th:href="@{/carrito/add/{id}(id=${juego.id})}" th:classappend="${juego.stock == 0 ? 'disabled' : ''}" class="btn btn-sm btn-outline-success me-2" title="Añadir al Carrito">
+                                <i class="bi bi-cart"></i> Añadir
                             </a>
-                            <a th:href="@{/videojuegos/eliminar/{id}(id=${juego.id})}" class="btn btn-sm btn-outline-danger" title="Eliminar" onclick="return confirm('¿Seguro que deseas eliminar este juego del catálogo?');">
-                                <i class="bi bi-trash"></i>
-                            </a>
+                            
+                            <span sec:authorize="hasAuthority('ROLE_ADMIN')">
+                                <a th:href="@{/videojuegos/editar/{id}(id=${juego.id})}" class="btn btn-sm btn-outline-warning me-2" title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a th:href="@{/videojuegos/eliminar/{id}(id=${juego.id})}" class="btn btn-sm btn-outline-danger" title="Eliminar" onclick="return confirm('¿Seguro que deseas eliminar este juego del catálogo?');">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </span>
                         </td>
                     </tr>
                 </tbody>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Compra Exitosa - Nexus Games</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="container mt-5 text-center">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <i class="bi bi-check-circle-fill text-neon-green" style="font-size: 5rem;"></i>
+                <h1 class="text-white mt-3">¡Pago Aprobado!</h1>
+                <p class="text-secondary mt-3">Gracias por tu compra. Los juegos de tu carrito han sido añadidos a tu biblioteca digital.</p>
+                
+                <div class="card card-dark p-3 mt-4 border-secondary text-start mx-auto" style="max-width: 300px;">
+                    <p class="mb-1 text-secondary">Recibo digital nº: <span class="text-white">#NEXUS-8910</span></p>
+                    <p class="mb-1 text-secondary">Importe cobrado: <span class="text-neon-green fw-bold" th:text="${total + ' €'}"></span></p>
+                </div>
+
+                <a th:href="@{/videojuegos}" class="btn btn-neon mt-5">Volver al Catálogo</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

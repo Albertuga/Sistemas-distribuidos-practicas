@@ -29,6 +29,8 @@ public class User implements Serializable {
     private String nombreUsuario;
     @Column(name = "password", length = 250)
     private String password;
+    @Column(name = "estado")
+    private boolean baneado = false;
 
     @Lob
     private byte[] publickey;
@@ -38,6 +40,14 @@ public class User implements Serializable {
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Role userRole;
+
+	public boolean isBaneado() {
+		return baneado;
+	}
+
+	public void setBaneado(boolean baneado) {
+		this.baneado = baneado;
+	}
 
 	public Integer getId() {
 		return id;

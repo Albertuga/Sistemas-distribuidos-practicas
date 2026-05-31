@@ -83,4 +83,17 @@ public class UsuarioController {
         userRepository.deleteById(id);
         return "redirect:/usuarios";
     }
+    
+ // Ban / Unban: Cambiar el estado de acceso al chat
+    @GetMapping("/estado/{id}")
+    public String cambiarEstadoBaneo(@PathVariable Integer id) {
+        User usuario = userRepository.findById(id).orElseThrow();
+        
+        // Protegemos para que el admin principal nunca pueda ser baneado por accidente
+        if (!usuario.getUsername().equals("admin")) {
+            usuario.setBaneado(!usuario.isBaneado());
+            userRepository.save(usuario);
+        }
+        return "redirect:/usuarios";
+    }
 }
