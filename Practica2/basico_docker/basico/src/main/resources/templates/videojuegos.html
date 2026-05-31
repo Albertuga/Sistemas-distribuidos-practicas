@@ -13,9 +13,17 @@
     <div class="container mt-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="text-white"><i class="bi bi-controller text-neon-purple"></i> Catálogo de Videojuegos</h2>
+            <div class="d-flex gap-3">
+                <form th:action="@{/videojuegos}" method="get" class="d-flex">
+                    <div class="input-group">
+                        <input type="text" name="buscar" th:value="${buscar}" class="form-control bg-dark text-white border-secondary" placeholder="Buscar juego...">
+                        <button class="btn btn-outline-secondary text-neon-purple" type="submit"><i class="bi bi-search"></i></button>
+                        <a th:if="${buscar != null and !buscar.isEmpty()}" th:href="@{/videojuegos}" class="btn btn-outline-danger"><i class="bi bi-x-lg"></i></a>
+                    </div>
+                </form>
             <a sec:authorize="hasAuthority('ROLE_ADMIN')" th:href="@{/videojuegos/nuevo}" class="btn btn-neon"><i class="bi bi-plus-lg"></i> Añadir Juego</a>
         </div>
-
+ </div>
         <div class="card card-dark p-0 overflow-hidden">
             <table class="table table-dark table-hover mb-0 align-middle">
                 <thead>

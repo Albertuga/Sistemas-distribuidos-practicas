@@ -26,6 +26,14 @@ public class Role implements Serializable {
     @Column(nullable = false)
     private Integer showOnCreate;
 
+	public Integer getShowOnCreate() {
+		return showOnCreate;
+	}
+
+	public void setShowOnCreate(Integer showOnCreate) {
+		this.showOnCreate = showOnCreate;
+	}
+
 	public Integer getId() {
 		return id;
 	}

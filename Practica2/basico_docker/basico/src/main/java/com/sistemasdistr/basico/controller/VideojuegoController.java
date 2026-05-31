@@ -20,10 +20,15 @@ public class VideojuegoController {
         this.categoriaRepository = categoriaRepository;
     }
 
-    // Read: Mostrar todos los videojuegos
+ // Read: Mostrar todos los videojuegos o filtrar
     @GetMapping
-    public String listarVideojuegos(Model model) {
-        model.addAttribute("videojuegos", videojuegoRepository.findAll());
+    public String listarVideojuegos(@RequestParam(value = "buscar", required = false) String buscar, Model model) {
+        if (buscar != null && !buscar.isEmpty()) {
+            model.addAttribute("videojuegos", videojuegoRepository.findByTituloContainingIgnoreCase(buscar));
+        } else {
+            model.addAttribute("videojuegos", videojuegoRepository.findAll());
+        }
+        model.addAttribute("buscar", buscar);
         return "videojuegos";
     }
 

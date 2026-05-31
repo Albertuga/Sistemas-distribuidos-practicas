@@ -24,10 +24,15 @@ public class UsuarioController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    // Read: Mostrar todos los usuarios
+ // Read: Mostrar todos los usuarios o filtrar
     @GetMapping
-    public String listarUsuarios(Model model) {
-        model.addAttribute("usuarios", userRepository.findAll());
+    public String listarUsuarios(@RequestParam(value = "buscar", required = false) String buscar, Model model) {
+        if (buscar != null && !buscar.isEmpty()) {
+            model.addAttribute("usuarios", userRepository.findByUsernameContainingIgnoreCaseOrNombreUsuarioContainingIgnoreCase(buscar, buscar));
+        } else {
+            model.addAttribute("usuarios", userRepository.findAll());
+        }
+        model.addAttribute("buscar", buscar);
         return "usuarios";
     }
 

@@ -21,11 +21,16 @@ public class CategoriaController {
         this.categoriaRepository = categoriaRepository;
     }
 
-    // Read: Mostrar todas las categorías
+ // Read: Mostrar todas las categorías o filtrar por búsqueda
     @GetMapping
-    public String listarCategorias(Model model) {
-        model.addAttribute("categorias", categoriaRepository.findAll());
-        return "categorias"; // Llama al archivo categorias.html
+    public String listarCategorias(@RequestParam(value = "buscar", required = false) String buscar, Model model) {
+        if (buscar != null && !buscar.isEmpty()) {
+            model.addAttribute("categorias", categoriaRepository.findByNombreContainingIgnoreCase(buscar));
+        } else {
+            model.addAttribute("categorias", categoriaRepository.findAll());
+        }
+        model.addAttribute("buscar", buscar); // Pasamos el texto a la vista para mantenerlo en la barra
+        return "categorias";
     }
 
     // Create: Mostrar el formulario en blanco
@@ -57,4 +62,5 @@ public class CategoriaController {
         categoriaRepository.deleteById(id);
         return "redirect:/categorias";
     }
+    
 }
