@@ -39,7 +39,7 @@ public class SecurityConfig {
                 .userDetailsService(customUserDetailsService)
                 .authorizeHttpRequests(auth -> auth
                         // 1. Solo permitimos el acceso público a la pantalla de login
-                        .requestMatchers("/login", "/css/**").permitAll()
+                        .requestMatchers("/login", "/registro", "/css/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         
                      // RUTAS EXCLUSIVAS DEL ADMINISTRADOR (Tienen que tener ROLE_ADMIN en la BD)

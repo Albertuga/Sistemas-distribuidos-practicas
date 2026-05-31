@@ -1,49 +1,82 @@
 package com.sistemasdistr.basico.controller;
 
+import com.sistemasdistr.basico.model.Role;
 import com.sistemasdistr.basico.model.User;
+import com.sistemasdistr.basico.repository.RoleRepository;
+import com.sistemasdistr.basico.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 
-import com.sistemasdistr.basico.repository.UserRepository;
 import java.security.Principal;
+import java.time.LocalDateTime;
 
 @Controller
 public class Maincontroller {
-    
-	private final UserRepository userRepository;
-	
-	// Inyectamos el repositorio de usuarios
-    public Maincontroller(UserRepository userRepository) {
+
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public Maincontroller(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
-    
- // PANTALLA DE UBICACIÓN (GOOGLE MAPS)
-    @GetMapping("/tiendas")
-    public String vistaTiendas() {
-        return "tiendas"; // Buscará tiendas.html en la carpeta templates
-    }
-	
+
     @GetMapping("/")
-    public String vistaHome(ModelMap interfazConPantalla){
+    public String vistaHome() {
         return "index";
     }
 
-    // ¡ESTE ES EL MÉTODO CLAVE PARA QUE SE VEA EL LOGIN!
     @GetMapping("/login")
     public String vistaLogin() {
-        return "login"; // Esto le dice a Spring que busque el archivo login.html
+        return "login"; 
     }
-    
- // PANTALLA DE MI PERFIL
+
     @GetMapping("/perfil")
     public String vistaPerfil(ModelMap model, Principal principal) {
-        // Buscamos en la BD los datos completos del usuario que tiene la sesión activa
         String usernameActual = principal.getName();
         User usuarioLogueado = userRepository.findUserByUsername(usernameActual);
-        
         model.addAttribute("usuario", usuarioLogueado);
-        return "perfil"; // Buscará perfil.html
+        return "perfil";
     }
-    
+
+    @GetMapping("/tiendas")
+    public String vistaTiendas() {
+        return "tiendas"; 
+    }
+
+    // --- NUEVAS RUTAS DE REGISTRO PÚBLICO ---
+
+    @GetMapping("/registro")
+    public String vistaRegistro(ModelMap model) {
+        model.addAttribute("usuario", new User());
+        return "registro"; // Muestra la pantalla de registro
+    }
+
+    @PostMapping("/registro")
+    public String procesarRegistro(@ModelAttribute("usuario") User usuario) {
+        // 1. Buscamos el rol de usuario normal para asignárselo
+        Role userRole = null;
+        for (Role role : roleRepository.findAll()) {
+            if ("ROLE_USER".equals(role.getRoleName())) {
+                userRole = role;
+                break;
+            }
+        }
+
+        // 2. Configuramos los datos automáticos
+        usuario.setUserRole(userRole);
+        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+        usuario.setFechaUltimoAcceso(LocalDateTime.now());
+        usuario.setBaneado(false);
+
+        // 3. Guardamos y redirigimos al login con un mensaje de éxito
+        userRepository.save(usuario);
+        return "redirect:/login?registrado";
+    }
 }

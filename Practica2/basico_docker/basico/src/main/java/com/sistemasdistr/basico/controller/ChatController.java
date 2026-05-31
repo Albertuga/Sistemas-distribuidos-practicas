@@ -20,12 +20,11 @@ public class ChatController {
         this.userRepository = userRepository;
     }
 
-    // 1. Mostrar la página HTML del chat (CON FILTRO DE BANEO)
+    // 1. Mostrar la página HTML del chat (FILTRO EN LA PUERTA)
     @GetMapping("/chat")
     public String mostrarChat(Principal principal) {
         User usuario = userRepository.findUserByUsername(principal.getName());
         
-        // Si el usuario está baneado, lo expulsamos de vuelta al inicio con un mensaje
         if (usuario != null && usuario.isBaneado()) {
             return "redirect:/?error=baneado"; 
         }
@@ -33,17 +32,32 @@ public class ChatController {
         return "chat"; 
     }
 
-    // 2. Recibir un mensaje y enviarlo a todos
+    // 2. Recibir un mensaje y enviarlo a todos (FILTRO EN EL TÚNEL EN TIEMPO REAL)
     @MessageMapping("/chat.sendMessage")
     @SendTo("/topic/public")
-    public ChatMessage sendMessage(@Payload ChatMessage chatMessage) {
+    public ChatMessage sendMessage(@Payload ChatMessage chatMessage, Principal principal) {
+        // Consultamos la BD en el milisegundo exacto en que llega el mensaje
+        User usuario = userRepository.findUserByUsername(principal.getName());
+        
+        if (usuario != null && usuario.isBaneado()) {
+            // Si está baneado, lanzamos un error interno que aborta la función. 
+            // El mensaje muere aquí y NUNCA llega al resto de usuarios.
+            throw new RuntimeException("Usuario baneado intentó enviar un mensaje.");
+        }
+        
         return chatMessage;
     }
 
-    // 3. Avisar cuando un usuario entra a la sala
+    // 3. Avisar cuando un usuario entra a la sala (FILTRO DE CONEXIÓN)
     @MessageMapping("/chat.addUser")
     @SendTo("/topic/public")
-    public ChatMessage addUser(@Payload ChatMessage chatMessage) {
+    public ChatMessage addUser(@Payload ChatMessage chatMessage, Principal principal) {
+        User usuario = userRepository.findUserByUsername(principal.getName());
+        
+        if (usuario != null && usuario.isBaneado()) {
+            throw new RuntimeException("Usuario baneado intentó unirse al chat.");
+        }
+        
         return chatMessage;
     }
 }

@@ -39,6 +39,9 @@
         <div th:if="${param.logout}" class="alert alert-success border-success bg-transparent text-success">
             Has cerrado sesión correctamente.
         </div>
+        <div th:if="${param.registrado}" class="alert alert-success border-success bg-transparent text-success">
+            ¡Cuenta creada con éxito! Ya puedes iniciar sesión.
+        </div>
 
         <form th:action="@{/login}" method="post">
             <div class="mb-3 text-start">
@@ -57,7 +60,14 @@
                 </div>
             </div>
             
-            <button type="submit" class="btn btn-neon w-100 py-2 fs-5 fw-bold">ENTRAR AL NEXO</button>
+            <div class="mt-2" style="font-size: 0.9em;">
+                <span class="text-secondary">¿Aún no tienes cuenta? </span>
+                <a th:href="@{/registro}" class="text-neon-purple text-decoration-none fw-bold" style="transition: 0.3s;" onmouseover="this.style.textShadow='0 0 8px rgba(139, 92, 246, 0.8)'" onmouseout="this.style.textShadow='none'">
+                    Regístrate aquí
+                </a>
+            </div>
+            
+            <button type="submit" class="btn btn-neon w-100 py-2 fs-5 fw-bold">ENTRAR</button>
         </form>
     </div>
 </body>
